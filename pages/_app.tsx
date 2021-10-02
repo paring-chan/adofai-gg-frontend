@@ -1,7 +1,17 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import React from 'react'
+import dynamic from 'next/dynamic'
+
+const Layout = dynamic(() => import('../components/layout'), {
+  loading: () => <div>Loading...</div>
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
 }
 export default MyApp
