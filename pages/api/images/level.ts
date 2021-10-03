@@ -16,7 +16,7 @@ const difficultyIconCache = new Map<number, Image>()
 
 async function getLogo() {
   if (logo) return logo
-  logo = await loadImage(path.join(assetsDir, 'logo.png'))
+  logo = await loadImage(path.join(assetsDir, 'icon.png'))
   return logo
 }
 
