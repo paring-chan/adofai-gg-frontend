@@ -4,6 +4,7 @@ const Container = styled.div`
   width: 100%;
   padding-left: 10px;
   padding-right: 10px;
+  box-sizing: border-box;
   @media screen and (max-width: 639px) {
     max-width: 640px;
   }
@@ -21,9 +22,6 @@ const Container = styled.div`
   @media screen and (min-width: 1280px) {
     max-width: 1280px;
   }
-
-  margin-left: auto;
-  margin-right: auto;
 `
 
 export default Container

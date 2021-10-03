@@ -202,20 +202,20 @@ export const SearchContentCheckbox: React.FC<{
           </>
         }
       >
-        <>
+        <span>
           <input
             defaultChecked={isDefault}
             type="checkbox"
             id={`tag_${tooltip}`}
             style={{ display: 'none' }}
-            onChange={(event) => {
-              onSelect(event.target.id)
+            onChange={() => {
+              onSelect(tooltip)
             }}
           />
           <label htmlFor={`tag_${tooltip}`}>
             <img src={img} alt={tooltip} width={28} />
           </label>
-        </>
+        </span>
       </Tooltip>
     </CheckboxContainer>
   )
@@ -246,7 +246,7 @@ export const SearchContentRadio: React.FC<{
       <input
         type="radio"
         id={`tag_${tooltip}`}
-        onChange={(e) => onSelect(e.target.id)}
+        onChange={() => onSelect(tooltip)}
         style={{ display: 'none' }}
         defaultChecked={isDefault}
         name="radio"

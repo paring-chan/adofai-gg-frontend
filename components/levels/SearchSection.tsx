@@ -12,8 +12,8 @@ import { Tooltip } from '@mui/material'
 const Container = styled.section`
   width: 100%;
   min-height: 32px;
-  margin-top: 10px;
-  padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 `
 
 const Section = styled.section`

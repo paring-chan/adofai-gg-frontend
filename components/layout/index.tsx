@@ -6,7 +6,9 @@ const Layout: React.FC = ({ children }) => {
   return (
     <div style={{ width: '100%' }}>
       <Header />
-      <Container>{children}</Container>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Container>{children}</Container>
+      </div>
     </div>
   )
 }

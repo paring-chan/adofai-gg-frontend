@@ -2,15 +2,21 @@ import React, { Reducer } from 'react'
 import { NextPage } from 'next'
 import ScrollButton from '../../components/ScrollButton'
 import Content from '../../components/layout/Content'
-import LevelSearchSection from '../../components/levelList/SearchSection'
+import LevelSearchSection from '../../components/levels/SearchSection'
 import Head from 'next/head'
 import SearchContentItem, {
   SearchContentCheckbox,
   SearchContentInput,
   SearchContentRadio
-} from '../../components/levelList/SearchContentItem'
+} from '../../components/levels/SearchContentItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { api } from '../../utils/request'
+import LevelListItem from '../../components/levels/LevelListItem'
+import styled from 'styled-components'
+
+const ScrollingArea = styled.div`
+  width: 100%;
+`
 
 const Levels: NextPage<{ query: string }> = ({ query }) => {
   const getInitialState = () => ({
@@ -148,7 +154,7 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
 
     fetchData()
     // eslint-disable-next-line
-  }, [state.searchTerm, state.sortBy, state.filterInput])
+  }, [state.searchTerm, state.sortBy, state.tag, state.filterInput])
 
   const fetchMoreData = async () => {
     if (state.items.length >= state.itemCount) {
@@ -383,18 +389,19 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
           </form>
         }
       />
-      <InfiniteScroll
-        next={fetchMoreData}
-        hasMore={state.hasMore}
-        loader={<div>Loading...</div>}
-        dataLength={state.items.length}
-        scrollThreshold={0.8}
-      >
-        {(state.items as any[]).map((x, i) => (
-          <div key={i}>{x.title}</div>
-        ))}
-      </InfiniteScroll>
-      {state.searchTerm}
+      <ScrollingArea>
+        <InfiniteScroll
+          next={fetchMoreData}
+          hasMore={state.hasMore}
+          loader={<div>Loading...</div>}
+          dataLength={state.items.length}
+          scrollThreshold={0.8}
+        >
+          {(state.items as any[]).map((x, i) => (
+            <LevelListItem key={i} levelData={x} />
+          ))}
+        </InfiniteScroll>
+      </ScrollingArea>
     </Content>
   )
 }
