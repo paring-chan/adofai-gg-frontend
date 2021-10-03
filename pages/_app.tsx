@@ -19,6 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider theme={theme}>
+      <div id="bg" />
       <Layout>
         <Head>
           <title>Adofai.gg</title>

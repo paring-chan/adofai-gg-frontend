@@ -9,6 +9,8 @@ import SearchContentItem, {
   SearchContentInput,
   SearchContentRadio
 } from '../../components/levelList/SearchContentItem'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { api } from '../../utils/request'
 
 const Levels: NextPage<{ query: string }> = ({ query }) => {
   const getInitialState = () => ({
@@ -127,6 +129,47 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
   const tagIcon = (id: string) => require(`@assets/tag/${id}.svg`).default.src
   const sortIcon = (id: string) =>
     require(`@assets/sort_icons/${id}.svg`).default.src
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        dispatch({ type: 'FETCH_ERROR', error: null })
+        dispatch({ type: 'HAS_MORE_ITEMS', hasMore: true })
+
+        const params = fetchParams(0)
+        const response = await api.get<any>('/api/v1/levels', { params })
+
+        dispatch({ type: 'FETCH_RESULT', items: response.data.results })
+        dispatch({ type: 'ITEM_COUNT', itemCount: response.data.count })
+      } catch (e) {
+        dispatch({ type: 'FETCH_ERROR', error: e })
+      }
+    }
+
+    fetchData()
+    // eslint-disable-next-line
+  }, [state.searchTerm, state.sortBy, state.filterInput])
+
+  const fetchMoreData = async () => {
+    if (state.items.length >= state.itemCount) {
+      dispatch({ type: 'HAS_MORE_ITEMS', hasMore: false })
+      return
+    }
+
+    try {
+      dispatch({ type: 'FETCH_ERROR', error: null })
+
+      const params = fetchParams(state.items.length)
+      const response = await api.get<any>('/api/v1/levels', { params })
+
+      dispatch({
+        type: 'FETCH_RESULT',
+        items: state.items.concat(response.data.results)
+      })
+    } catch (e) {
+      dispatch({ type: 'FETCH_ERROR', error: e })
+    }
+  }
 
   return (
     <Content>
@@ -340,6 +383,17 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
           </form>
         }
       />
+      <InfiniteScroll
+        next={fetchMoreData}
+        hasMore={state.hasMore}
+        loader={<div>Loading...</div>}
+        dataLength={state.items.length}
+        scrollThreshold={0.8}
+      >
+        {(state.items as any[]).map((x, i) => (
+          <div key={i}>{x.title}</div>
+        ))}
+      </InfiniteScroll>
       {state.searchTerm}
     </Content>
   )

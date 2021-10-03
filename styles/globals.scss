@@ -38,9 +38,17 @@ body::-webkit-scrollbar-corner {
   display: none;
 }
 
-body {
-  background: url('../assets/background.png');
+#bg {
+  background-image: url('../assets/background.png');
   background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  position: fixed;
+}
+
+body {
+  height: 100%;
   font-family: Quicksand, '나눔스퀘어라운드', sans-serif;
   user-select: none;
   color: #fff;
