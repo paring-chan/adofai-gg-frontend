@@ -2,7 +2,7 @@ import { Canvas, Image, loadImage, registerFont } from 'canvas'
 import * as yup from 'yup'
 import { NextApiRequest, NextApiResponse } from 'next'
 import path from 'path'
-import axios from 'axios'
+import { api } from '../../../utils/request'
 
 const levelSchema = yup.object().shape({
   id: yup.string().required()
@@ -34,9 +34,7 @@ const level = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const data = await levelSchema.validate(req.query)
 
-    const level = (
-      await axios.get('https://api.adofai.gg:9200/api/v1/levels/' + data.id)
-    ).data as any
+    const level = (await api.get('/api/v1/levels/' + data.id)).data as any
 
     const thumbnail =
       'https://i.ytimg.com/vi/' +
