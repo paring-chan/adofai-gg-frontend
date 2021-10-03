@@ -7,7 +7,7 @@ import {
   faFilter,
   faSortAmountDown
 } from '@fortawesome/free-solid-svg-icons'
-import Tooltip from '../Tooltip'
+import { Tooltip } from '@mui/material'
 
 const Container = styled.section`
   width: 100%;
@@ -19,13 +19,26 @@ const Container = styled.section`
 const Section = styled.section`
   display: flex;
   gap: 10px;
+  @media (max-width: 512px) {
+    flex-direction: column;
+  }
+  .actions {
+    gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    & > * {
+      width: 100%;
+      justify-content: center;
+      display: flex;
+    }
+  }
 `
 
 const SearchBar = styled(TextField)`
   width: 100%;
 `
 
-const ActionButton = styled(Tooltip)`
+const ActionButton = styled.div`
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 5px;
@@ -100,18 +113,23 @@ const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
           placeholder={placeholder}
           onChange={(e) => onSearch(e.target.value)}
         />
-        <ActionButton onClick={() => setShowFilter(!showFilter)}>
-          <div className="text">Filter</div>
-          <FontAwesomeIcon icon={faFilter} size="lg" />
-        </ActionButton>
-        <ActionButton onClick={() => setShowSort(!showSort)}>
-          <div className="text">Sort</div>
-          <FontAwesomeIcon icon={faSortAmountDown} size="lg" />
-        </ActionButton>
-        <ActionButton onClick={resetFilter}>
-          <div className="text">Reset Filter</div>
-          <FontAwesomeIcon icon={faEraser} size="lg" />
-        </ActionButton>
+        <div className="actions">
+          <Tooltip title={<div style={{ fontSize: 14 }}>Filter</div>}>
+            <ActionButton onClick={() => setShowFilter(!showFilter)}>
+              <FontAwesomeIcon icon={faFilter} size="lg" />
+            </ActionButton>
+          </Tooltip>
+          <Tooltip title={<div style={{ fontSize: 14 }}>Sort</div>}>
+            <ActionButton onClick={() => setShowSort(!showSort)}>
+              <FontAwesomeIcon icon={faSortAmountDown} size="lg" />
+            </ActionButton>
+          </Tooltip>
+          <Tooltip title={<div style={{ fontSize: 14 }}>Reset Filter</div>}>
+            <ActionButton onClick={resetFilter}>
+              <FontAwesomeIcon icon={faEraser} size="lg" />
+            </ActionButton>
+          </Tooltip>
+        </div>
       </Section>
 
       <SearchSection show={showFilter}>

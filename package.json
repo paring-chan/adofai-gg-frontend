@@ -12,6 +12,8 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
+    "@mui/material": "^5.0.2",
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "axios": "^0.22.0",
     "canvas": "^2.8.0",
     "clsx": "^1.1.1",
@@ -30,5 +32,8 @@
     "eslint-config-next": "11.1.2",
     "prettier": "^2.4.1",
     "typescript": "4.4.3"
+  },
+  "resolutions": {
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
   }
 }
