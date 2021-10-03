@@ -15,12 +15,36 @@ a {
   box-sizing: border-box;
 }
 
+body::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(26, 37, 51, 0.7);
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.658);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(202, 202, 202, 0.658);
+}
+
+body::-webkit-scrollbar-corner {
+  display: none;
+}
+
 body {
   background: url('../assets/background.png');
+  background-size: cover;
   font-family: Quicksand, '나눔스퀘어라운드', sans-serif;
   user-select: none;
   color: #fff;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
