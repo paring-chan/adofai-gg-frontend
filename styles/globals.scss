@@ -53,3 +53,9 @@ body {
   font-weight: 700;
   src: url('../assets/fonts/Quicksand-Bold.ttf');
 }
+
+input {
+  &:focus {
+    outline: none;
+  }
+}

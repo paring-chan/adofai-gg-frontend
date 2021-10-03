@@ -3,6 +3,8 @@ import styled from 'styled-components'
 const Container = styled.div`
   width: 100%;
   padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   @media screen and (max-width: 639px) {
     max-width: 640px;
   }
