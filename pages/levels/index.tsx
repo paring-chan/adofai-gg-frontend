@@ -6,6 +6,18 @@ import LevelSearchSection from '../../components/levelList/SearchSection'
 import Head from 'next/head'
 
 const Levels: NextPage<{ query: string }> = ({ query }) => {
+  const getInitialState = () => ({
+    items: [],
+    error: null,
+    isError: false,
+    hasMore: true,
+    itemCount: 0,
+    sortBy: 'RECENT_DESC',
+    tag: Array.from({ length: 20 }, () => false),
+    filterInput: Array.from({ length: 6 }, () => ''),
+    searchTerm: query
+  })
+
   const reduce: Reducer<any, any> = (state, action) => {
     switch (action.type) {
       case 'FETCH_RESULT':
@@ -56,23 +68,15 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
           ...state,
           filterInput: action.filterInput
         }
+      case 'RESET_FILTER':
+        return getInitialState()
 
       default:
         return state
     }
   }
 
-  const [state, dispatch] = React.useReducer(reduce, {
-    items: [],
-    error: null,
-    isError: false,
-    hasMore: true,
-    itemCount: 0,
-    sortBy: 'RECENT_DESC',
-    tag: Array.from({ length: 20 }, () => false),
-    filterInput: Array.from({ length: 6 }, () => ''),
-    searchTerm: query
-  })
+  const [state, dispatch] = React.useReducer(reduce, getInitialState())
 
   const tagConvert = (tags: boolean[]) => {
     let tagNumbers: number[] = []
@@ -109,6 +113,9 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
       </Head>
       <ScrollButton />
       <LevelSearchSection
+        resetFilter={() => {
+          dispatch({ type: 'RESET_FILTER' })
+        }}
         value={state.searchTerm}
         onSearch={(value) => {
           dispatch({ type: 'SEARCH_TERM', searchTerm: value })

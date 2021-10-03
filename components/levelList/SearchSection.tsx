@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import TextField from '../TextField'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '../Tooltip'
 
-const Container = styled.div`
+const Container = styled.section`
   width: 100%;
   min-height: 32px;
   margin-top: 10px;
@@ -38,12 +38,46 @@ const ActionButton = styled(Tooltip)`
   }
 `
 
+type SearchSectionProps = {
+  show: boolean
+}
+
+const SearchSection = styled.section<SearchSectionProps>`
+  margin-top: 10px;
+  width: 100%;
+  transition: all 0.2s ease;
+  ${({ show }) =>
+    show
+      ? css`
+          height: auto;
+          opacity: 1;
+          visibility: visible;
+        `
+      : css`
+          opacity: 0;
+          height: 0;
+          margin: 0;
+          visibility: hidden;
+        `}
+  .title {
+    border-top-color: rgba(255, 255, 255, 0.4);
+    border-top-width: 1px;
+    border-top-style: solid;
+    padding-top: 10px;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-bottom: 5px;
+    width: 100%;
+  }
+`
+
 type LevelSearchSectionProps = {
   placeholder: string
   value: string
   onSearch: (value: string) => void
   filterContent: React.ReactNode
   sortContent: React.ReactNode
+  resetFilter: () => void
 }
 
 const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
@@ -51,8 +85,12 @@ const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
   placeholder,
   onSearch,
   filterContent,
-  sortContent
+  sortContent,
+  resetFilter
 }) => {
+  const [showFilter, setShowFilter] = React.useState(false)
+  const [showSort, setShowSort] = React.useState(false)
+
   return (
     <Container>
       <Section>
@@ -62,19 +100,28 @@ const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
           placeholder={placeholder}
           onChange={(e) => onSearch(e.target.value)}
         />
-        <ActionButton>
+        <ActionButton onClick={() => setShowFilter(!showFilter)}>
           <div className="text">Filter</div>
           <FontAwesomeIcon icon={faFilter} size="lg" />
         </ActionButton>
-        <ActionButton>
+        <ActionButton onClick={() => setShowSort(!showSort)}>
           <div className="text">Sort</div>
           <FontAwesomeIcon icon={faSortAmountDown} size="lg" />
         </ActionButton>
-        <ActionButton>
+        <ActionButton onClick={resetFilter}>
           <div className="text">Reset Filter</div>
           <FontAwesomeIcon icon={faEraser} size="lg" />
         </ActionButton>
       </Section>
+
+      <SearchSection show={showFilter}>
+        <div className="title">Filter</div>
+        {filterContent}
+      </SearchSection>
+      <SearchSection show={showSort}>
+        <div className="title">Sort by</div>
+        {sortContent}
+      </SearchSection>
     </Container>
   )
 }
