@@ -10,7 +10,7 @@ const levelSchema = yup.object().shape({
 
 let logo: Image | null = null
 
-const assetsDir = path.join(__dirname, '../../../../../public')
+const assetsDir = path.join(__dirname, '../../../../../assets')
 
 const difficultyIconCache = new Map<number, Image>()
 
@@ -47,10 +47,13 @@ const level = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const canvas = new Canvas(1280, 720)
 
-    await registerFont('fonts/NanumSquareRoundOTFEB.otf', {
-      family: 'NanumSquareRound',
-      weight: 'normal'
-    })
+    await registerFont(
+      path.join(assetsDir, 'fonts/NanumSquareRoundOTFEB.otf'),
+      {
+        family: 'NanumSquareRound',
+        weight: 'normal'
+      }
+    )
 
     const ctx = canvas.getContext('2d')
 
