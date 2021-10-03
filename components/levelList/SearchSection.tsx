@@ -38,11 +38,12 @@ const SearchBar = styled(TextField)`
   width: 100%;
 `
 
-const ActionButton = styled.div`
+const ActionButton = styled.div<{ active?: boolean }>`
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.3);
+  background: ${({ active }) =>
+    active ? 'rgba(255,255,255,.5)' : 'rgba(255, 255, 255, 0.3)'};
   transition: all 0.2s ease;
 
   svg {
@@ -90,7 +91,6 @@ type LevelSearchSectionProps = {
   onSearch: (value: string) => void
   filterContent: React.ReactNode
   sortContent: React.ReactNode
-  resetFilter: () => void
 }
 
 const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
@@ -98,8 +98,7 @@ const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
   placeholder,
   onSearch,
   filterContent,
-  sortContent,
-  resetFilter
+  sortContent
 }) => {
   const [showFilter, setShowFilter] = React.useState(false)
   const [showSort, setShowSort] = React.useState(false)
@@ -115,17 +114,23 @@ const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
         />
         <div className="actions">
           <Tooltip title={<div style={{ fontSize: 14 }}>Filter</div>}>
-            <ActionButton onClick={() => setShowFilter(!showFilter)}>
+            <ActionButton
+              active={showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+            >
               <FontAwesomeIcon icon={faFilter} size="lg" />
             </ActionButton>
           </Tooltip>
           <Tooltip title={<div style={{ fontSize: 14 }}>Sort</div>}>
-            <ActionButton onClick={() => setShowSort(!showSort)}>
+            <ActionButton
+              onClick={() => setShowSort(!showSort)}
+              active={showSort}
+            >
               <FontAwesomeIcon icon={faSortAmountDown} size="lg" />
             </ActionButton>
           </Tooltip>
           <Tooltip title={<div style={{ fontSize: 14 }}>Reset Filter</div>}>
-            <ActionButton onClick={resetFilter}>
+            <ActionButton onClick={() => window.location.reload()}>
               <FontAwesomeIcon icon={faEraser} size="lg" />
             </ActionButton>
           </Tooltip>

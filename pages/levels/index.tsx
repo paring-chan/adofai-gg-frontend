@@ -135,9 +135,6 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
       </Head>
       <ScrollButton />
       <LevelSearchSection
-        resetFilter={() => {
-          dispatch({ type: 'RESET_FILTER' })
-        }}
         value={state.searchTerm}
         onSearch={(value) => {
           dispatch({ type: 'SEARCH_TERM', searchTerm: value })
