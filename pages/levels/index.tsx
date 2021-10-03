@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 import ScrollButton from '../../components/ScrollButton'
 import Content from '../../components/layout/Content'
 import LevelSearchSection from '../../components/levelList/SearchSection'
+import Head from 'next/head'
 
 const Levels: NextPage<{ query: string }> = ({ query }) => {
   const reduce: Reducer<any, any> = (state, action) => {
@@ -103,6 +104,9 @@ const Levels: NextPage<{ query: string }> = ({ query }) => {
 
   return (
     <Content>
+      <Head>
+        <title>Levels - Adofai.gg</title>
+      </Head>
       <ScrollButton />
       <LevelSearchSection
         value={state.searchTerm}
