@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Head from 'next/head'
 
 export const ErrorContainer = styled.div`
   display: flex;
@@ -9,7 +10,14 @@ export const ErrorContainer = styled.div`
 `
 
 const Error = () => {
-  return <ErrorContainer>Oops! An error occurred.</ErrorContainer>
+  return (
+    <ErrorContainer>
+      <Head>
+        <title>Error - Adofai.gg</title>
+      </Head>
+      Oops! An error occurred.
+    </ErrorContainer>
+  )
 }
 
 export default Error
