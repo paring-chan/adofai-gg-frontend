@@ -54,9 +54,7 @@ const Home: NextPage = () => {
         onSubmit={async (e) => {
           e.preventDefault()
           if (!searchTerm) return
-          await Router.push(
-            '/levelList?query=' + encodeURIComponent(searchTerm)
-          )
+          await Router.push('/levels?query=' + encodeURIComponent(searchTerm))
         }}
       >
         <SearchBar
