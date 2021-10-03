@@ -7,13 +7,24 @@ const Container = styled.div`
   height: 40px;
   background: rgba(26, 37, 51, 0.7);
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 0 10px;
   position: sticky;
   top: 0;
   left: 0;
   width: 100vw;
+`
+
+const Content = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   gap: 10px;
 `
 
@@ -23,7 +34,11 @@ const LinksContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
   a {
+    pointer-events: initial;
     font-size: 20px;
     display: flex;
     align-items: center;
@@ -39,20 +54,25 @@ const AccountMenuContainer = styled.div`
 const Header: React.FC = () => {
   return (
     <Container>
-      {/*logo*/}
-      <Link passHref href="/">
-        <a>
-          <img src={logo.src} height={20} alt="logo" />
-        </a>
-      </Link>
-      {/*links*/}
-      <LinksContainer>
-        <Link href="/levels" passHref>
-          <a>Levels</a>
+      <Content>
+        {/*logo*/}
+        <Link passHref href="/">
+          <a style={{ height: 20 }}>
+            <img src={logo.src} height={20} alt="logo" />
+          </a>
         </Link>
-      </LinksContainer>
-      {/*account menu*/}
-      <AccountMenuContainer />
+        {/*links*/}
+        <LinksContainer>
+          <Link href="/levels" passHref>
+            <a>Levels</a>
+          </Link>
+          <Link href="/ranks" passHref>
+            <a>Ranking</a>
+          </Link>
+        </LinksContainer>
+        {/*account menu*/}
+        <AccountMenuContainer />
+      </Content>
     </Container>
   )
 }

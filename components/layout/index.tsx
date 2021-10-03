@@ -1,11 +1,12 @@
 import React from 'react'
 import Header from './Header'
+import Container from './Container'
 
 const Layout: React.FC = ({ children }) => {
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <Header />
-      {children}
+      <Container>{children}</Container>
     </div>
   )
 }
