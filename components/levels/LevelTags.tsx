@@ -112,6 +112,14 @@ const LevelTags: React.FC<{ tag: string; id: string; styleClass?: string }> = ({
   const tag = Number(_tag)
   if (tagDescription[tag - 1] === undefined) return null
 
+  const getImageOrFail = (mod: string) => {
+    try {
+      return require(`@assets/tag/${mod}.svg`).default.src
+    } catch (e: any) {
+      return ''
+    }
+  }
+
   return (
     <>
       <Tooltip
@@ -126,7 +134,7 @@ const LevelTags: React.FC<{ tag: string; id: string; styleClass?: string }> = ({
         <img
           data-for={'tag_' + tag + '_' + idConvert(id)}
           className={styleClass}
-          src={require(`@assets/tag/${tag}.svg`).default.src}
+          src={getImageOrFail(`${tag}`)}
           alt=""
         />
       </Tooltip>
