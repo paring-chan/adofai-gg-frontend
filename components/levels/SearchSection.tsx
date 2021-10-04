@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import TextField from '../TextField'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -7,7 +7,7 @@ import {
   faFilter,
   faSortAmountDown
 } from '@fortawesome/free-solid-svg-icons'
-import { Tooltip } from '@mui/material'
+import { Collapse, Tooltip } from '@mui/material'
 
 const Container = styled.section`
   width: 100%;
@@ -52,27 +52,10 @@ const ActionButton = styled.div<{ active?: boolean }>`
   }
 `
 
-type SearchSectionProps = {
-  show: boolean
-}
-
-const SearchSection = styled.section<SearchSectionProps>`
+const SearchSection = styled.section`
   margin-top: 10px;
   width: 100%;
   transition: all 0.2s ease;
-  ${({ show }) =>
-    show
-      ? css`
-          height: auto;
-          opacity: 1;
-          visibility: visible;
-        `
-      : css`
-          opacity: 0;
-          height: 0;
-          margin: 0;
-          visibility: hidden;
-        `}
   .title {
     border-top-color: rgba(255, 255, 255, 0.4);
     border-top-width: 1px;
@@ -137,14 +120,18 @@ const LevelSearchSection: React.FC<LevelSearchSectionProps> = ({
         </div>
       </Section>
 
-      <SearchSection show={showFilter}>
-        <div className="title">Filter</div>
-        {filterContent}
-      </SearchSection>
-      <SearchSection show={showSort}>
-        <div className="title">Sort by</div>
-        {sortContent}
-      </SearchSection>
+      <Collapse in={showFilter}>
+        <SearchSection>
+          <div className="title">Filter</div>
+          {filterContent}
+        </SearchSection>
+      </Collapse>
+      <Collapse in={showSort}>
+        <SearchSection>
+          <div className="title">Sort by</div>
+          {sortContent}
+        </SearchSection>
+      </Collapse>
     </Container>
   )
 }
