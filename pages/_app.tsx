@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import icon from '@assets/icon.png'
 import { ThemeProvider, createTheme } from '@mui/material'
+import NextNProgress from 'nextjs-progressbar'
 
 const Layout = dynamic(() => import('../components/layout'), {
   loading: () => <div>Loading...</div>
@@ -20,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <div id="bg" />
+      <NextNProgress showOnShallow={true} stopDelayMs={200} height={3} />
       <Layout>
         <Head>
           <title>Adofai.gg</title>

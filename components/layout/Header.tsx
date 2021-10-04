@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 const Container = styled.div`
   backdrop-filter: blur(10px);
-  z-index: 99999;
+  z-index: 9999;
   height: 40px;
   background: rgba(26, 37, 51, 0.7);
   display: flex;
