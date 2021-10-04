@@ -28,9 +28,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <meta
             name="description"
             content="A website for viewing and downloading adofai custom levels."
-            property="description"
+            key="description"
           />
-          <meta name="og:image" content={icon.src} property="image" />
+          <meta key="image" property="og:image" content={icon.src} />
         </Head>
         <Component {...pageProps} />
       </Layout>
