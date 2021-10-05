@@ -1,7 +1,17 @@
 import React from 'react'
-import { Dialog, DialogProps } from '@mui/material'
+import { Dialog, DialogProps, Slide } from '@mui/material'
+import { TransitionProps } from '@mui/material/transitions'
 
 type FnProps = { open: () => void; close: () => void }
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children?: React.ReactElement<any, any>
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide ref={ref} {...props} />
+})
 
 const AlertButton: React.FC<{
   button: (props: FnProps) => React.ReactNode
@@ -18,7 +28,12 @@ const AlertButton: React.FC<{
   return (
     <>
       {button(fnProps)}
-      <Dialog open={open} {...dialogProps} onClose={() => setOpen(false)}>
+      <Dialog
+        open={open}
+        {...dialogProps}
+        onClose={() => setOpen(false)}
+        TransitionComponent={Transition}
+      >
         {children(fnProps)}
       </Dialog>
     </>
