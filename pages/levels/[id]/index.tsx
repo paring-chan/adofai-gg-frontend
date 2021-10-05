@@ -11,6 +11,14 @@ import { faSteam } from '@fortawesome/free-brands-svg-icons'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import LevelTags from '../../../components/levels/LevelTags'
+import AlertButton from '../../../components/AlertButton'
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@mui/material'
 
 const ExtendedContent = styled(Content)`
   background-color: #0f172163;
@@ -233,7 +241,61 @@ const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
                     <IncompleteTag />
                   )}
                   {level.censored && <CensoredTag />}
-                  {level.epilepsyWarning && <SeizureTag />}
+                  {level.epilepsyWarning && (
+                    <AlertButton
+                      button={({ open }) => <SeizureTag onClick={open} />}
+                    >
+                      {({ close }) => (
+                        <>
+                          <DialogTitle>
+                            What is Photosensitive Seizure?
+                          </DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                              Some people may experience seizures when exposed
+                              to certain visual effects, such as{' '}
+                              <strong>severely flashing lights</strong> during
+                              the game. These symptoms are called
+                              &quot;photosensitive seizures&quot;.
+                              <br />
+                              <br />
+                              Photosensitive seizures can occur even to those
+                              who have never experienced seizures before.
+                              <br />
+                              <br />
+                              When seizures begin, symptoms such as dizziness,
+                              changes in vision, eye or face cramps, twitching
+                              or shaking arms or legs, disorientation, panic,
+                              and, in severe cases, temporary loss of
+                              consciousness can occur.
+                              <br />
+                              <br />
+                              <strong>
+                                If symptoms occur, immediately turn off the game
+                                and talk to your doctor.
+                              </strong>
+                              <br />
+                              <br />
+                              To reduce the risk of seizures, follow these
+                              steps.
+                              <br />- Play this level in a bright place
+                              <br />- Avoid playing this level when you are
+                              tired
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              variant="outlined"
+                              fullWidth
+                              onClick={close}
+                            >
+                              Close
+                            </Button>
+                          </DialogActions>
+                        </>
+                      )}
+                    </AlertButton>
+                  )}
                   {level.tags.length !== 0
                     ? // eslint-disable-next-line array-callback-return
                       level.tags.map((tag, i) => {
