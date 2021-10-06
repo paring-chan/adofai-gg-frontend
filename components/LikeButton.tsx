@@ -18,7 +18,8 @@ const Button = styled.div<{ liked: boolean }>`
             color: rgba(255, 77, 77);
           }
         `
-      : `background-color: white;`}
+      : ''}
+  background-color: white;
   font-family: 'Roboto Mono', 'Quicksand', monospace;
   letter-spacing: -1px;
   transition: all 0.2s ease;
