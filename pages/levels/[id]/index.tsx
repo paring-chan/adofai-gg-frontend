@@ -266,6 +266,14 @@ const LeaderboardContainer = styled.section`
       &:hover {
         background-color: #33416199;
         text-decoration: none;
+
+        .detail-description {
+          opacity: 1 !important;
+        }
+
+        .play {
+          opacity: 0 !important;
+        }
       }
 
       .rank {
@@ -301,6 +309,10 @@ const LeaderboardContainer = styled.section`
           flex-grow: 1;
           font-size: 1.1em;
           opacity: 0.8;
+          .detail-description {
+            opacity: 0;
+            position: absolute;
+          }
           .play {
             display: flex;
             .pp {
@@ -654,6 +666,15 @@ const LevelInfo: NextPage<{ level: Level | null; leaderboard: any[] | null }> =
                         <div className="item-content">
                           <span className="name">{x.player.name}</span>
                           <div className="detail">
+                            <div className="detail-description">
+                              &quot;
+                              {x.description ? (
+                                x.description
+                              ) : (
+                                <i>No description.</i>
+                              )}
+                              &quot;
+                            </div>
                             <div className="play">
                               <div className="pp">{x.playPoint.toFixed(0)}</div>
                               <div className="play-info">
