@@ -312,7 +312,9 @@ const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
             <meta
               key="image"
               property="og:image"
-              content={`/api/images/level?thumbnail=${encodeURIComponent(
+              content={`${
+                process.env.openGraphBaseURL
+              }/api/level?thumbnail=${encodeURIComponent(
                 thumbnail
               )}&difficulty=${level.difficulty}`}
             />
