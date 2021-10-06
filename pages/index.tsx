@@ -4,6 +4,9 @@ import Content from '../components/layout/Content'
 import styled from 'styled-components'
 import React from 'react'
 import Router from 'next/router'
+import { api } from '../utils/request'
+import { Level } from '../typings/Level'
+import RecentLevels from '../components/home/RecentLevels'
 
 const LogoImage = styled.img`
   margin-top: 60px;
@@ -32,7 +35,9 @@ const SearchBar = styled.input`
   box-sizing: border-box;
 `
 
-const Home: NextPage = () => {
+const Home: NextPage<{ topPlays: any[]; recentLevels: Level[] }> = ({
+  recentLevels
+}) => {
   const [searchTerm, setSearchTerm] = React.useState('')
 
   return (
@@ -63,8 +68,38 @@ const Home: NextPage = () => {
           placeholder="Search Song, Artist, or Creator"
         />
       </form>
+      <RecentLevels levels={recentLevels} />
     </Content>
   )
+}
+
+Home.getInitialProps = async () => {
+  const { data: topPlaysData } = await api.get<{ results: any[] }>(
+    '/api/v1/playLogs',
+    {
+      params: {
+        offset: 0,
+        amount: 3,
+        sort: 'PP_DESC'
+      }
+    }
+  )
+
+  const { data: recentLevels } = await api.get<{ results: any[] }>(
+    '/api/v1/levels',
+    {
+      params: {
+        offset: 0,
+        amount: 10,
+        sort: 'RECENT_DESC'
+      }
+    }
+  )
+
+  return {
+    topPlays: topPlaysData.results || [],
+    recentLevels: recentLevels.results || []
+  }
 }
 
 export default Home
