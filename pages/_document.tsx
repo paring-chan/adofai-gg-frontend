@@ -1,6 +1,6 @@
 import Document, { DocumentContext } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
-import { AppPropsType, AppType } from 'next/dist/shared/lib/utils'
+import type { AppPropsType, AppType } from 'next/dist/shared/lib/utils'
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
