@@ -12,7 +12,7 @@ const Title = styled.div`
 
 const RecentLevels: React.FC<{ levels: Level[] }> = ({ levels }) => {
   return (
-    <section style={{ width: '100%' }}>
+    <section style={{ width: '100%', maxWidth: 1100 }}>
       <Title>
         <h1>Recent Ranked Levels</h1>
         <h3>

@@ -595,7 +595,12 @@ const LevelInfo: NextPage<{ level: Level | null; leaderboard: any[] | null }> =
                         <div className="label" style={{ textAlign: 'center' }}>
                           Lv.
                         </div>
-                        <div className="value">
+                        <div
+                          className="value"
+                          style={{
+                            paddingTop: 5
+                          }}
+                        >
                           <img
                             src={getDifficultyIcon()}
                             alt=""
