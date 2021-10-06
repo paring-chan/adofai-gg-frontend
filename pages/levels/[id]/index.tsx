@@ -171,6 +171,12 @@ const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
     ? 'https://i.ytimg.com/vi/' + level.youtubeId + '/original.jpg'
     : ''
 
+  React.useEffect(() => {
+    if (level?.hasNSFW) {
+      alert('nsfw warning')
+    }
+  })
+
   return (
     <div>
       {level ? (
