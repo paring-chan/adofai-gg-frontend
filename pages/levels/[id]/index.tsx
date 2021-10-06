@@ -637,7 +637,7 @@ const LevelInfo: NextPage<{ level: Level | null; leaderboard: any[] | null }> =
                   </div>
                 </Description>
               </Header>
-              {leaderboard?.length && (
+              {leaderboard && leaderboard?.length > 0 && (
                 <LeaderboardContainer>
                   <h1 className="title">Leaderboard</h1>
                   <div className="content">
