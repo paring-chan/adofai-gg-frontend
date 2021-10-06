@@ -22,14 +22,20 @@ import {
 } from '@mui/material'
 import Router from 'next/router'
 import LikeButton from '../../../components/LikeButton'
+import SpeedTrial from '@assets/other_icons/speed.svg'
+import AccuracyIcon from '@assets/other_icons/speed.svg'
 
 const ExtendedContent = styled(Content)`
+  margin-left: 10px;
+  margin-right: 10px;
+`
+
+const Header = styled.div`
   background-color: #0f172163;
+  width: 100%;
   margin-top: 30px;
   border-radius: 20px;
   overflow: hidden;
-  margin-left: 10px;
-  margin-right: 10px;
 `
 
 const LevelInfoTag = styled.div`
@@ -235,6 +241,102 @@ const Description = styled.div`
   }
 `
 
+const LeaderboardContainer = styled.section`
+  margin-top: 40px;
+  width: 100%;
+
+  .title {
+    display: flex;
+  }
+
+  .content {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7.5px;
+
+    .item {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      background-color: #fafbff1f;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #33416199;
+        text-decoration: none;
+      }
+
+      .rank {
+        width: 110px;
+        height: 100%;
+        padding: 20px 18px;
+        margin-right: 20px;
+        font-size: 1.75em;
+        font-weight: 700;
+        font-family: 'Roboto Mono', 'Quicksand', monospace;
+        background-color: #b2c1ff23;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+      }
+
+      .item-content {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
+
+        .name {
+          font-size: 1.5em;
+          font-weight: 500;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+        .detail {
+          flex-grow: 1;
+          font-size: 1.1em;
+          opacity: 0.8;
+          .play {
+            display: flex;
+            .pp {
+              width: 180px;
+              @media screen and (max-width: 768px) {
+                width: 100px;
+              }
+              font-weight: 600;
+              &::after {
+                content: 'PP';
+                font-weight: 400;
+                margin-left: 5px;
+              }
+            }
+            .play-info {
+              display: flex;
+              align-items: center;
+              div {
+                display: flex;
+                align-items: center;
+              }
+              img {
+                margin-right: 4px;
+              }
+            }
+          }
+        }
+      }
+
+      * {
+        transition: all 0.2s ease;
+      }
+    }
+  }
+`
+
 const NSFWAlert: React.FC<{ open: boolean; close: () => void }> = ({
   open,
   close
@@ -271,292 +373,364 @@ const NSFWAlert: React.FC<{ open: boolean; close: () => void }> = ({
   )
 }
 
-const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
-  const thumbnail = level?.video
-    ? 'https://i.ytimg.com/vi/' + level.youtubeId + '/original.jpg'
-    : ''
+const LevelInfo: NextPage<{ level: Level | null; leaderboard: any[] | null }> =
+  ({ level, leaderboard }) => {
+    const thumbnail = level?.video
+      ? 'https://i.ytimg.com/vi/' + level.youtubeId + '/original.jpg'
+      : ''
 
-  const [showNSFW, setShowNSFW] = React.useState(false)
+    const [showNSFW, setShowNSFW] = React.useState(false)
 
-  React.useEffect(() => {
-    if (level?.hasNSFW) {
-      setShowNSFW(true)
+    React.useEffect(() => {
+      if (level?.hasNSFW) {
+        setShowNSFW(true)
+      }
+      // eslint-disable-next-line
+    }, [])
+
+    const getDifficultyIcon = () => {
+      try {
+        return require(`@assets/difficulty_icons/${
+          level?.censored ? '-2' : level?.difficulty
+        }.svg`).default.src
+      } catch (e: any) {
+        return ''
+      }
     }
-    // eslint-disable-next-line
-  }, [])
 
-  const getDifficultyIcon = () => {
-    try {
-      return require(`@assets/difficulty_icons/${
-        level?.censored ? '-2' : level?.difficulty
-      }.svg`).default.src
-    } catch (e: any) {
-      return ''
-    }
-  }
-
-  return (
-    <div>
-      <NSFWAlert open={showNSFW} close={() => setShowNSFW(false)} />
-      {level ? (
-        <>
-          <Head>
-            <title>
-              {level.artists.join(' & ')} - {level.title}
-            </title>
-            <meta
-              key="description"
-              name="og:description"
-              content={`by ${level.creators.join(' & ')}`}
-            />
-            <meta
-              key="image"
-              property="og:image"
-              content={`${
-                process.env.openGraphBaseURL
-              }/api/level?thumbnail=${encodeURIComponent(
-                thumbnail
-              )}&difficulty=${level.difficulty}`}
-            />
-            <meta property="og:image:width" content="1280" />
-            <meta property="og:image:height" content="720" />
-            <meta property="og:site_name" content="Adofai.gg" />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta
-              name="twitter:title"
-              content={`${level.artists.join(' & ')} - ${level.title}`}
-            />
-          </Head>
-          <ExtendedContent>
-            <InfoHeader background={level.censored ? censored.src : thumbnail}>
-              <div className="content">
-                <div>
-                  <div className="title">{level.title}</div>
-                  <div className="song">{level.song}</div>
-                  <div className="author">
-                    <strong>
-                      {level.artists.map((x, i) => (
-                        <span key={i}>
-                          {i > 0 && <span> & </span>}
-                          <Link
-                            href={`/levels?query=${encodeURIComponent(x)}`}
-                            passHref
-                          >
-                            <a>{x}</a>
-                          </Link>
-                        </span>
-                      ))}
-                    </strong>
-                    {' ─ Level by '}
-                    <strong>
-                      {level.creators.map((x, i) => (
-                        <span key={i}>
-                          {i > 0 && <span> & </span>}
-                          <Link
-                            href={`/levels?query=${encodeURIComponent(x)}`}
-                            passHref
-                          >
-                            <a>{x}</a>
-                          </Link>
-                        </span>
-                      ))}
-                    </strong>
-                  </div>
-                </div>
-                <div className="tags">
-                  {!level.censored && level.difficulty === 0 && (
-                    <IncompleteTag />
-                  )}
-                  {level.censored && <CensoredTag />}
-                  {level.hasNSFW && <NSFWTag />}
-                  {level.epilepsyWarning && (
-                    <AlertButton
-                      button={({ open }) => <SeizureTag onClick={open} />}
-                    >
-                      {({ close }) => (
-                        <>
-                          <DialogTitle>
-                            What is Photosensitive Seizure?
-                          </DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                              Some people may experience seizures when exposed
-                              to certain visual effects, such as{' '}
-                              <strong>severely flashing lights</strong> during
-                              the game. These symptoms are called
-                              &quot;photosensitive seizures&quot;.
-                              <br />
-                              <br />
-                              Photosensitive seizures can occur even to those
-                              who have never experienced seizures before.
-                              <br />
-                              <br />
-                              When seizures begin, symptoms such as dizziness,
-                              changes in vision, eye or face cramps, twitching
-                              or shaking arms or legs, disorientation, panic,
-                              and, in severe cases, temporary loss of
-                              consciousness can occur.
-                              <br />
-                              <br />
-                              <strong>
-                                If symptoms occur, immediately turn off the game
-                                and talk to your doctor.
-                              </strong>
-                              <br />
-                              <br />
-                              To reduce the risk of seizures, follow these
-                              steps.
-                              <br />- Play this level in a bright place
-                              <br />- Avoid playing this level when you are
-                              tired
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button
-                              variant="outlined"
-                              fullWidth
-                              onClick={close}
-                            >
-                              Close
-                            </Button>
-                          </DialogActions>
-                        </>
-                      )}
-                    </AlertButton>
-                  )}
-                  {level.tags.length !== 0
-                    ? // eslint-disable-next-line array-callback-return
-                      level.tags.map((tag, i) => {
-                        if (tag.id !== 23)
-                          return (
-                            <LevelTags
-                              key={i}
-                              tag={tag.id}
-                              id={`${level.id}`}
-                              styleClass="level-tag-icon"
-                            />
-                          )
-                      })
-                    : !level.epilepsyWarning &&
-                      !level.censored &&
-                      !level.hasNSFW && (
-                        <img
-                          className="main-tag"
-                          src={require('@assets/tag/empty.svg').default.src}
-                          alt="No Tags"
-                        />
-                      )}
-                </div>
-              </div>
-              <div className="buttons">
-                {level.workshop && (
-                  <a
-                    href={level.workshop}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="button"
-                  >
-                    <FontAwesomeIcon icon={faSteam} />
-                  </a>
-                )}
-                <a
-                  href={level.download}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="button"
+    return (
+      <div>
+        <NSFWAlert open={showNSFW} close={() => setShowNSFW(false)} />
+        {level ? (
+          <div>
+            <Head>
+              <title>
+                {level.artists.join(' & ')} - {level.title}
+              </title>
+              <meta
+                key="description"
+                name="og:description"
+                content={`by ${level.creators.join(' & ')}`}
+              />
+              <meta
+                key="image"
+                property="og:image"
+                content={`${
+                  process.env.openGraphBaseURL
+                }/api/level?thumbnail=${encodeURIComponent(
+                  thumbnail
+                )}&difficulty=${level.difficulty}`}
+              />
+              <meta property="og:image:width" content="1280" />
+              <meta property="og:image:height" content="720" />
+              <meta property="og:site_name" content="Adofai.gg" />
+              <meta name="twitter:card" content="summary_large_image" />
+              <meta
+                name="twitter:title"
+                content={`${level.artists.join(' & ')} - ${level.title}`}
+              />
+            </Head>
+            <ExtendedContent>
+              <Header>
+                <InfoHeader
+                  background={level.censored ? censored.src : thumbnail}
                 >
-                  <FontAwesomeIcon icon={faDownload} />
-                </a>
-              </div>
-            </InfoHeader>
-            <Description>
-              <div className="content">
-                <div className="items">
-                  <div className="item">
-                    <div className="label" style={{ textAlign: 'center' }}>
-                      Lv.
+                  <div className="content">
+                    <div>
+                      <div className="title">{level.title}</div>
+                      <div className="song">{level.song}</div>
+                      <div className="author">
+                        <strong>
+                          {level.artists.map((x, i) => (
+                            <span key={i}>
+                              {i > 0 && <span> & </span>}
+                              <Link
+                                href={`/levels?query=${encodeURIComponent(x)}`}
+                                passHref
+                              >
+                                <a>{x}</a>
+                              </Link>
+                            </span>
+                          ))}
+                        </strong>
+                        {' ─ Level by '}
+                        <strong>
+                          {level.creators.map((x, i) => (
+                            <span key={i}>
+                              {i > 0 && <span> & </span>}
+                              <Link
+                                href={`/levels?query=${encodeURIComponent(x)}`}
+                                passHref
+                              >
+                                <a>{x}</a>
+                              </Link>
+                            </span>
+                          ))}
+                        </strong>
+                      </div>
                     </div>
-                    <div className="value">
-                      <img
-                        src={getDifficultyIcon()}
-                        alt=""
-                        style={{
-                          width: 32,
-                          height: 32
-                        }}
+                    <div className="tags">
+                      {!level.censored && level.difficulty === 0 && (
+                        <IncompleteTag />
+                      )}
+                      {level.censored && <CensoredTag />}
+                      {level.hasNSFW && <NSFWTag />}
+                      {level.epilepsyWarning && (
+                        <AlertButton
+                          button={({ open }) => <SeizureTag onClick={open} />}
+                        >
+                          {({ close }) => (
+                            <>
+                              <DialogTitle>
+                                What is Photosensitive Seizure?
+                              </DialogTitle>
+                              <DialogContent>
+                                <DialogContentText>
+                                  Some people may experience seizures when
+                                  exposed to certain visual effects, such as{' '}
+                                  <strong>severely flashing lights</strong>{' '}
+                                  during the game. These symptoms are called
+                                  &quot;photosensitive seizures&quot;.
+                                  <br />
+                                  <br />
+                                  Photosensitive seizures can occur even to
+                                  those who have never experienced seizures
+                                  before.
+                                  <br />
+                                  <br />
+                                  When seizures begin, symptoms such as
+                                  dizziness, changes in vision, eye or face
+                                  cramps, twitching or shaking arms or legs,
+                                  disorientation, panic, and, in severe cases,
+                                  temporary loss of consciousness can occur.
+                                  <br />
+                                  <br />
+                                  <strong>
+                                    If symptoms occur, immediately turn off the
+                                    game and talk to your doctor.
+                                  </strong>
+                                  <br />
+                                  <br />
+                                  To reduce the risk of seizures, follow these
+                                  steps.
+                                  <br />- Play this level in a bright place
+                                  <br />- Avoid playing this level when you are
+                                  tired
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button
+                                  variant="outlined"
+                                  fullWidth
+                                  onClick={close}
+                                >
+                                  Close
+                                </Button>
+                              </DialogActions>
+                            </>
+                          )}
+                        </AlertButton>
+                      )}
+                      {level.tags.length !== 0
+                        ? // eslint-disable-next-line array-callback-return
+                          level.tags.map((tag, i) => {
+                            if (tag.id !== 23)
+                              return (
+                                <LevelTags
+                                  key={i}
+                                  tag={tag.id}
+                                  id={`${level.id}`}
+                                  styleClass="level-tag-icon"
+                                />
+                              )
+                          })
+                        : !level.epilepsyWarning &&
+                          !level.censored &&
+                          !level.hasNSFW && (
+                            <img
+                              className="main-tag"
+                              src={require('@assets/tag/empty.svg').default.src}
+                              alt="No Tags"
+                            />
+                          )}
+                    </div>
+                  </div>
+                  <div className="buttons">
+                    {level.workshop && (
+                      <a
+                        href={level.workshop}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="button"
+                      >
+                        <FontAwesomeIcon icon={faSteam} />
+                      </a>
+                    )}
+                    <a
+                      href={level.download}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button"
+                    >
+                      <FontAwesomeIcon icon={faDownload} />
+                    </a>
+                  </div>
+                </InfoHeader>
+                <Description>
+                  <div className="content">
+                    <div className="items">
+                      <div className="item">
+                        <div className="label" style={{ textAlign: 'center' }}>
+                          Lv.
+                        </div>
+                        <div className="value">
+                          <img
+                            src={getDifficultyIcon()}
+                            alt=""
+                            style={{
+                              width: 32,
+                              height: 32
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="item">
+                        <div className="label">BPM</div>
+                        <div className="value">
+                          {String(level.minBpm).split('.')[0]}
+                          <span className="demical">
+                            {String(level.minBpm).split('.')[1] === undefined
+                              ? null
+                              : `.${String(level.minBpm).split('.')[1]}`}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="item">
+                        <div className="label">Tiles</div>
+                        <div className="value">{level.tiles}</div>
+                      </div>
+                    </div>
+                    <div className="items">
+                      <div className="item">
+                        <div className="label">Description</div>
+                        <div className="value description">
+                          {!level.description
+                            ? `There's no description for this level.`
+                            : level.description}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ flexGrow: 1 }} />
+                    <div>
+                      <LikeButton likes={level.likes} />
+                    </div>
+                  </div>
+                  <div className="video">
+                    <div className="video-content">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${level.youtubeId}`}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                       />
                     </div>
                   </div>
-                  <div className="item">
-                    <div className="label">BPM</div>
-                    <div className="value">
-                      {String(level.minBpm).split('.')[0]}
-                      <span className="demical">
-                        {String(level.minBpm).split('.')[1] === undefined
-                          ? null
-                          : `.${String(level.minBpm).split('.')[1]}`}
-                      </span>
-                    </div>
+                </Description>
+              </Header>
+              {leaderboard?.length && (
+                <LeaderboardContainer>
+                  <h1 className="title">Leaderboard</h1>
+                  <div className="content">
+                    {leaderboard.map((x, i) => (
+                      <a
+                        href={x.url}
+                        key={i}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="item"
+                        style={{ color: '#fff' }}
+                      >
+                        <span className="rank">#{i + 1}</span>
+                        <div className="item-content">
+                          <span className="name">{x.player.name}</span>
+                          <div className="detail">
+                            <div className="play">
+                              <div className="pp">{x.playPoint.toFixed(0)}</div>
+                              <div className="play-info">
+                                <div style={{ minWidth: '4em' }}>
+                                  <img
+                                    src={SpeedTrial.src}
+                                    alt="Speed Trial: "
+                                    style={{
+                                      height: '0.9em'
+                                    }}
+                                  />
+                                  {x.speed / 100}x
+                                </div>
+                                <div>
+                                  <img
+                                    src={AccuracyIcon.src}
+                                    alt="Accurancy: "
+                                    style={{
+                                      height: '0.9em'
+                                    }}
+                                  />
+                                  {x.rawAccuracy
+                                    ? `${x.rawAccuracy.toFixed(1)}%`
+                                    : 'UNKNOWN'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    ))}
                   </div>
-                  <div className="item">
-                    <div className="label">Tiles</div>
-                    <div className="value">{level.tiles}</div>
-                  </div>
-                </div>
-                <div className="items">
-                  <div className="item">
-                    <div className="label">Description</div>
-                    <div className="value description">
-                      {!level.description
-                        ? `There's no description for this level.`
-                        : level.description}
-                    </div>
-                  </div>
-                </div>
-                <div style={{ flexGrow: 1 }} />
-                <div>
-                  <LikeButton likes={level.likes} />
-                </div>
-              </div>
-              <div className="video">
-                <div className="video-content">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${level.youtubeId}`}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                  />
-                </div>
-              </div>
-            </Description>
-          </ExtendedContent>
-        </>
-      ) : (
-        <></>
-      )}
-    </div>
-  )
-}
+                </LeaderboardContainer>
+              )}
+            </ExtendedContent>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+    )
+  }
 
 LevelInfo.getInitialProps = async (ctx) => {
-  const { data } = await api
-    .get(`/api/v1/levels/${ctx.query.id}`)
-    .catch(() => ({} as any))
-  if (!data)
-    return {
-      level: null
-    }
+  try {
+    const { data: levelData } = await api
+      .get(`/api/v1/levels/${ctx.query.id}`)
+      .catch(() => ({} as any))
+    const { data: leaderboardData } = await api
+      .get(`/api/v1/playLogs`, {
+        params: {
+          offset: 0,
+          amount: 10,
+          levelId: ctx.query.id,
+          sort: 'PP_DESC'
+        }
+      })
+      .catch(() => ({} as any))
+    if (!levelData)
+      return {
+        level: null,
+        leaderboard: null
+      }
 
-  let level: Level = data
+    let level: Level = levelData
 
-  level.hasNSFW = level.tags.some((tag) => tag.id === 23)
+    level.hasNSFW = level.tags.some((tag) => tag.id === 23)
 
-  level.youtubeId =
-    /^.*(?:youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#&?]*).*/.exec(
-      level.video
-    )![1]
+    level.youtubeId =
+      /^.*(?:youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#&?]*).*/.exec(
+        level.video
+      )![1]
 
-  return { level }
+    return { level, leaderboard: leaderboardData?.results || [] }
+  } catch (e: any) {
+    return { level: null, leaderboard: null }
+  }
 }
 
 export default LevelInfo
