@@ -14,11 +14,13 @@ import LevelTags from '../../../components/levels/LevelTags'
 import AlertButton from '../../../components/AlertButton'
 import {
   Button,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle
 } from '@mui/material'
+import Router from 'next/router'
 
 const ExtendedContent = styled(Content)`
   background-color: #0f172163;
@@ -84,6 +86,15 @@ const CensoredTag = styled(WarnTag2)`
   }
   &::after {
     content: 'Censored';
+  }
+`
+
+const NSFWTag = styled(WarnTag2)`
+  &::before {
+    content: '18';
+  }
+  &::after {
+    content: 'NSFW';
   }
 `
 
@@ -166,19 +177,59 @@ const Description = styled.div`
   width: 100%;
 `
 
+const NSFWAlert: React.FC<{ open: boolean; close: () => void }> = ({
+  open,
+  close
+}) => {
+  return (
+    <Dialog
+      BackdropProps={{
+        sx: {
+          backdropFilter: 'blur(30px) brightness(0.5)'
+        }
+      }}
+      open={open}
+    >
+      <DialogTitle>Are you sure?</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          This level contains <strong>NSFW content</strong>.
+          <br />
+          <br />
+          If you are a minor or don{"'"}t want to see a level with sexual
+          content, please{' '}
+          <strong>press Cancel and do NOT play this level</strong>.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="outlined" onClick={() => Router.push('/')}>
+          Cancel
+        </Button>
+        <Button variant="outlined" onClick={close} color="error">
+          Proceed
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
 const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
   const thumbnail = level?.video
     ? 'https://i.ytimg.com/vi/' + level.youtubeId + '/original.jpg'
     : ''
 
+  const [showNSFW, setShowNSFW] = React.useState(false)
+
   React.useEffect(() => {
     if (level?.hasNSFW) {
-      alert('nsfw warning')
+      setShowNSFW(true)
     }
-  })
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <div>
+      <NSFWAlert open={showNSFW} close={() => setShowNSFW(false)} />
       {level ? (
         <>
           <Head>
@@ -247,6 +298,7 @@ const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
                     <IncompleteTag />
                   )}
                   {level.censored && <CensoredTag />}
+                  {level.hasNSFW && <NSFWTag />}
                   {level.epilepsyWarning && (
                     <AlertButton
                       button={({ open }) => <SeizureTag onClick={open} />}
