@@ -1,5 +1,6 @@
 export interface Level {
   id: number
+  description: string
   artists: string[]
   creators: string[]
   censored: boolean

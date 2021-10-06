@@ -21,6 +21,7 @@ import {
   DialogTitle
 } from '@mui/material'
 import Router from 'next/router'
+import LikeButton from '../../../components/LikeButton'
 
 const ExtendedContent = styled(Content)`
   background-color: #0f172163;
@@ -175,6 +176,63 @@ const InfoHeader = styled.div<{ background: string }>`
 
 const Description = styled.div`
   width: 100%;
+  padding: 15px 20px;
+  display: flex;
+  gap: 10px;
+  .content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    .items {
+      display: flex;
+      gap: 25px;
+      .item {
+        .label {
+          font-size: 18px;
+          color: #b3b3b3;
+          font-weight: 600;
+        }
+        .value {
+          color: #fff;
+          font-size: 32px;
+          display: flex;
+          .demical {
+            font-size: 16px;
+          }
+          &.description {
+            line-height: 1.25em;
+            font-size: 28px !important;
+          }
+        }
+      }
+    }
+  }
+  .video {
+    max-width: 40%;
+    width: 100%;
+    .video-content {
+      width: 100%;
+      border-radius: 10px;
+      background-color: #0f172163;
+      position: relative;
+      align-items: center;
+      padding-bottom: 56.25%;
+      iframe {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+      }
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    .video {
+      max-width: 100% !important;
+    }
+  }
 `
 
 const NSFWAlert: React.FC<{ open: boolean; close: () => void }> = ({
@@ -226,6 +284,16 @@ const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
     }
     // eslint-disable-next-line
   }, [])
+
+  const getDifficultyIcon = () => {
+    try {
+      return require(`@assets/difficulty_icons/${
+        level?.censored ? '-2' : level?.difficulty
+      }.svg`).default.src
+    } catch (e: any) {
+      return ''
+    }
+  }
 
   return (
     <div>
@@ -399,7 +467,66 @@ const LevelInfo: NextPage<{ level: Level | null }> = ({ level }) => {
                 </a>
               </div>
             </InfoHeader>
-            <Description />
+            <Description>
+              <div className="content">
+                <div className="items">
+                  <div className="item">
+                    <div className="label" style={{ textAlign: 'center' }}>
+                      Lv.
+                    </div>
+                    <div className="value">
+                      <img
+                        src={getDifficultyIcon()}
+                        alt=""
+                        style={{
+                          width: 32,
+                          height: 32
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="item">
+                    <div className="label">BPM</div>
+                    <div className="value">
+                      {String(level.minBpm).split('.')[0]}
+                      <span className="demical">
+                        {String(level.minBpm).split('.')[1] === undefined
+                          ? null
+                          : `.${String(level.minBpm).split('.')[1]}`}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="item">
+                    <div className="label">Tiles</div>
+                    <div className="value">{level.tiles}</div>
+                  </div>
+                </div>
+                <div className="items">
+                  <div className="item">
+                    <div className="label">Description</div>
+                    <div className="value description">
+                      {!level.description
+                        ? `There's no description for this level.`
+                        : level.description}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ flexGrow: 1 }} />
+                <div>
+                  <LikeButton likes={level.likes} />
+                </div>
+              </div>
+              <div className="video">
+                <div className="video-content">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${level.youtubeId}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                  />
+                </div>
+              </div>
+            </Description>
           </ExtendedContent>
         </>
       ) : (
