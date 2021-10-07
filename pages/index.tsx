@@ -7,6 +7,7 @@ import Router from 'next/router'
 import { api } from '../utils/request'
 import { Level } from '../typings/Level'
 import RecentLevels from '../components/home/RecentLevels'
+import TopPlays from '../components/home/TopPlays'
 
 const LogoImage = styled.img`
   margin-top: 60px;
@@ -36,7 +37,8 @@ const SearchBar = styled.input`
 `
 
 const Home: NextPage<{ topPlays: any[]; recentLevels: Level[] }> = ({
-  recentLevels
+  recentLevels,
+  topPlays
 }) => {
   const [searchTerm, setSearchTerm] = React.useState('')
 
@@ -68,22 +70,37 @@ const Home: NextPage<{ topPlays: any[]; recentLevels: Level[] }> = ({
           placeholder="Search Song, Artist, or Creator"
         />
       </form>
+      <TopPlays topPlays={topPlays} />
       <RecentLevels levels={recentLevels} />
     </Content>
   )
 }
 
 Home.getInitialProps = async () => {
-  const { data: topPlaysData } = await api.get<{ results: any[] }>(
-    '/api/v1/playLogs',
-    {
+  const { data: topPlaysData } = await api
+    .get<{ results: any[] }>('/api/v1/playLogs', {
       params: {
         offset: 0,
         amount: 3,
         sort: 'PP_DESC'
       }
-    }
-  )
+    })
+    .then(async ({ data }) => {
+      return {
+        data: await Promise.all(
+          data.results.map(async (x) => {
+            return {
+              ...x,
+              difficulty: (
+                await api.get<{ difficulty: number }>(
+                  `/api/v1/levels/${x.level.id}`
+                )
+              ).data.difficulty
+            }
+          })
+        )
+      }
+    })
 
   const { data: recentLevels } = await api.get<{ results: any[] }>(
     '/api/v1/levels',
@@ -97,7 +114,7 @@ Home.getInitialProps = async () => {
   )
 
   return {
-    topPlays: topPlaysData.results || [],
+    topPlays: topPlaysData || [],
     recentLevels: recentLevels.results || []
   }
 }
