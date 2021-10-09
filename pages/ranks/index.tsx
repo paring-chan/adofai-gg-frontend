@@ -6,6 +6,7 @@ import { api } from '../../utils/request'
 import { CircularProgress } from '@mui/material'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import RankingItem from '../../components/ranking/RankingItem'
+import { NextPage } from 'next'
 
 const Title = styled.div`
   margin-top: 40px;
@@ -15,7 +16,7 @@ const Title = styled.div`
   margin-bottom: 10px;
 `
 
-const Rankings = () => {
+const Rankings: NextPage = () => {
   const reduce: Reducer<any, any> = (state, action) => {
     switch (action.type) {
       case 'FETCH_REQUEST':
